@@ -1,0 +1,7 @@
+Programa ej5
+Type
+  Persona = record
+    apellido: string[30];
+    nombre: string[30];
+    fechaNacimiento: LongInt;
+  end;
