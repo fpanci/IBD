@@ -16,21 +16,24 @@ Type
       rewrite(fPersonas);
 
       {lee el apellido de una nueva persona}
+      writeln('Ingrese apellido.');
       readln(per.apellido);
 
       while(per.apellido <> 'nulo') do begin
+        writeln('Ingrese nombre.');
         readln(per.nombre);
+        writeln('Ingrese fecha de nacimiento: aaaammdd.');
         readln(per.fechaNacimiento);
 
         {escribe la persona en el archivo}
         write(Personas, per);
 
         {lee el apellido de una nueva persona}
+        writeln('Ingrese apellido. (nulo para finalizar)');
         readln(per.apellido);
       end;
 
       close(Personas);
-
     end;
 
     {b.i}
@@ -46,7 +49,7 @@ Type
           if(esDelMes(per.fechaNacimiento, valorMes)) do
             imprimirPersona(per);
         end;
-
+        close(fPersonas);
       end;
 
     {b.ii}
@@ -61,6 +64,7 @@ Type
           read(fPersonas, per);
           imprimirPersona(per);
         end;
+        close(fPersonas);
       end;
 
     function esDelMes(fNacimiento: LongInt, valorMes: Integer) : boolean;
@@ -69,11 +73,53 @@ Type
                     (fNacimiento = 0);
       end;
 
-    procedure imprimirPersona(per: Persona) do begin
+    procedure imprimirPersona(per: Persona);
+    begin
       write(per.apellido + ", ");
       write(per.nombre + " ");
       write(per.fechaNacimiento);
       writeln();
     end;
 
-End;
+    procedure imprimirOpciones();
+      begin
+        writeln('Seleccione:');
+        writeln('a: Cargar nuevamente el archivo.');
+        writeln('b: Listar las personas que cumplen años en mes ingresado.');
+        writeln('c: Listar todas las personas cargadas.');
+        writeln('z: Finalizar.');
+      end;
+
+  Var
+    personas: ArchivoPersonas;
+    NombreFisico: string[12];
+    opcion: char;
+    mes: Integer;
+  Begin
+    write('Ingrese el nombre del archivo con el que se va a trabajar: ');
+    readln(NombreFisico);
+    assign(personas, NombreFisico);
+
+    crearArchivo(personas);
+
+    imprimirOpciones();
+    readln(opcion);
+
+    while(opcion <> 'z') do begin
+      case opcion of
+        'a' : crearArchivo(personas);
+        'b' : begin
+          writeln('Ingrese mes.');
+          readln(mes);
+          cumplenEnMes(personas, mes);
+        end;
+        'c' : listarTodas(personas);
+      end;
+      if(opcion <> 'z') do begin
+        imprimirOpciones();
+        readln(opcion);
+      end;
+    end;
+
+
+  End.
