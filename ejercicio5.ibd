@@ -5,3 +5,75 @@ Type
     nombre: string[30];
     fechaNacimiento: LongInt;
   end;
+  ArchivoPersonas = file of Persona;
+
+  {a}
+  procedure crearArchivo(fPersonas: ArchivoPersonas);
+    var
+      per: Persona;
+    begin
+      {abre el archivo para creación}
+      rewrite(fPersonas);
+
+      {lee el apellido de una nueva persona}
+      readln(per.apellido);
+
+      while(per.apellido <> 'nulo') do begin
+        readln(per.nombre);
+        readln(per.fechaNacimiento);
+
+        {escribe la persona en el archivo}
+        write(Personas, per);
+
+        {lee el apellido de una nueva persona}
+        readln(per.apellido);
+      end;
+
+      close(Personas);
+
+    end;
+
+    {b.i}
+    procedure cumplenEnMes(fPersonas: ArchivoPersonas; valorMes: Integer);
+      var
+        per: Persona;
+      begin
+        {abre el archivo para lectura}
+        reset(fPersonas);
+
+        while(not EOF(fPersonas)) do begin
+          read(fPersonas, per);
+          if(esDelMes(per.fechaNacimiento, valorMes)) do
+            imprimirPersona(per);
+        end;
+
+      end;
+
+    {b.ii}
+    procedure listarTodas(fPersona: ArchivoPersonas);
+      var
+        per: Persona;
+      begin
+        {abre el archivo para lectura}
+        reset(fPersonas);
+
+        while(not EOF(fPersonas)) do begin
+          read(fPersonas, per);
+          imprimirPersona(per);
+        end;
+      end;
+
+    function esDelMes(fNacimiento: LongInt, valorMes: Integer) : boolean;
+      begin
+        esDelMes := (((fNacimiento MOD 10000) DIV 100) = valorMes) or
+                    (fNacimiento = 0);
+      end;
+
+    procedure imprimirPersona(per: Persona) do begin
+      write(per.apellido + ", ");
+      write(per.nombre + " ");
+      write(per.fechaNacimiento);
+      writeln();
+    end;
+
+End;
